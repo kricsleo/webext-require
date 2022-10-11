@@ -15,13 +15,36 @@ async function fetchPkgInfo(pkg: string): Promise<Record<string, unknown>> {
 export async function require(pkg: string): Promise<void> {
   console.log(`Fetching ${pkg}`);
   const [code, pkgInfo] = await Promise.all([fetchPkg(pkg), fetchPkgInfo(pkg)]);
-  // eslint-disable-next-line
-  eval(code);
+  injectCode(code)
   console.log(`Done with ${pkgInfo.version}`);
 }
 
-console.log('Started');
-// eslint-disable-next-line
-// @ts-ignore
-// TODO: doesn't work, fix it
-window.requir = require;
+function injectCode(code: string) {
+  const script = document.createElement('script')
+  script.innerHTML = code
+  document.body.appendChild(script)
+  script.remove()
+}
+
+function injectRequire() {
+  injectCode(`
+    window.require = function(pkg) {
+      window.postMessage({
+        type: 'require',
+        data: { pkg }
+      })
+    }
+  `)
+}
+
+function contentListen() {
+  window.addEventListener("message", event => {
+    if(event.source == window && event.data?.type === 'require') {
+      const pkg = event.data.data.pkg
+      require(pkg)
+    }
+  })
+}
+
+contentListen()
+injectRequire()
