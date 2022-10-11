@@ -37,11 +37,15 @@ function injectCode(code: string) {
 
 function injectRequire() {
   injectCode(`
-    window.require = function(pkg) {
-      window.postMessage({
-        type: 'require',
-        data: { pkg }
-      })
+    if(window.require) {
+      console.log("⚙️ Already got an require, won't inject.")
+    } else {
+      window.require = function(pkg) {
+        window.postMessage({
+          type: 'require',
+          data: { pkg }
+        })
+      }
     }
   `)
 }
@@ -55,5 +59,9 @@ function contentListen() {
   })
 }
 
-contentListen()
-injectRequire()
+function run() {
+  injectRequire()
+  contentListen()
+}
+
+run()
