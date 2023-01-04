@@ -32,10 +32,10 @@ function injectCode(code: string) {
 
 function injectRequire() {
   injectCode(`
-    if(window.require) {
-      console.log("⚙️ Already got an require, won't inject.")
+    if(window._require) {
+      console.log("⚙️ Already got an _require, won't inject.")
     } else {
-      window.require = function(pkg) {
+      window._require = function(pkg) {
         window.postMessage({
           type: 'require',
           data: { pkg }
