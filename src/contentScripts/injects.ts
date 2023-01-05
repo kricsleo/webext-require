@@ -1,3 +1,5 @@
+import craie from 'craie'
+
 async function fetchPkg(pkg: string): Promise<string> {
   const res = await fetch(`https://cdn.jsdelivr.net/npm/${pkg}`);
   const code = await res.text();
@@ -10,32 +12,34 @@ async function fetchPkgInfo(pkg: string): Promise<Record<string, unknown>> {
   return pkgInfo;
 }
 
-export async function require(pkg: string): Promise<void> {
-  console.log(`⚙️ Fetching ${pkg}`);
+async function require(pkg: string): Promise<void> {
+  craie.info(craie.roundSL.bgRose.white('Fetching'), craie.roundSR.bgWhite.rose(pkg))
   const [code, pkgInfo] = await Promise.all([fetchPkg(pkg), fetchPkgInfo(pkg)]);
-  console.log(`⚙️ Is using ${pkgInfo.name}@${pkgInfo.version}`);
+  craie.info(craie.roundSL.bgRose.white('Injected'), craie.roundSR.bgWhite.rose(`${pkgInfo.name}@${pkgInfo.version}`))
   injectCode(code)
 }
 
 function injectCode(code: string) {
   const script = document.createElement('script')
-  script.innerHTML = `
-    try {
-      ${code}
-    } catch(e) {
-      console.error('O_o Excute error, this package may not support browser.')
-    }
-  `
+  script.type = 'module'
+  script.innerHTML = code
+  // script.innerHTML = `
+  //   try {
+  //     ${code}
+  //   } catch(e) {
+  //     console.error('[Require]O_o, this package may not support browser.')
+  //   }
+  // `
   document.body.appendChild(script)
-  script.remove()
+  // script.remove()
 }
 
-function injectRequire() {
+export function injectRequire(namespace: string = '_require') {
   injectCode(`
-    if(window._require) {
-      console.log("⚙️ Already got an _require, won't inject.")
+    if(window.${namespace}) {
+      console.log("⚙️ \`${namespace}\` already existed, won't inject.")
     } else {
-      window._require = function(pkg) {
+      window.${namespace} = function(pkg) {
         window.postMessage({
           type: 'require',
           data: { pkg }
@@ -45,7 +49,7 @@ function injectRequire() {
   `)
 }
 
-function contentListen() {
+export function listenRequire() {
   window.addEventListener("message", event => {
     if(event.source == window && event.data?.type === 'require') {
       const pkg = event.data.data.pkg
@@ -54,9 +58,3 @@ function contentListen() {
   })
 }
 
-function run() {
-  injectRequire()
-  contentListen()
-}
-
-run()
