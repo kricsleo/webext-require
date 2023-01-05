@@ -1,21 +1,24 @@
 {
-	"extends": "@abhijithvijayan/tsconfig",
-	"compilerOptions": {
-		"target": "es5", // ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'.
-		"module": "esnext", // Module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'.
-		"lib": [
-			"dom",
-			"dom.iterable",
-			"esnext"
-		],
-		"declaration": false,
-		"isolatedModules": true,
-		/* Additional Checks */
-		"useDefineForClassFields": true,
-		"skipLibCheck": true,
-	},
-	"include": [
-		"source",
-		"webpack.config.js"
-	]
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "ESNext",
+    "target": "es2016",
+    "lib": ["DOM", "ESNext"],
+    "strict": true,
+    "esModuleInterop": true,
+    "incremental": false,
+    "skipLibCheck": true,
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "noUnusedLocals": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": [
+      "vite/client"
+    ],
+    "paths": {
+      "~/*": ["src/*"]
+    }
+  },
+  "exclude": ["dist", "node_modules"]
 }
