@@ -12,14 +12,9 @@ async function fetchPkgInfo(pkg: string): Promise<Record<string, unknown>> {
 
 export async function require(pkg: string): Promise<void> {
   console.log(`⚙️ Fetching ${pkg}`);
-  try {
-    const [code, pkgInfo] = await Promise.all([fetchPkg(pkg), fetchPkgInfo(pkg)]);
-    console.log(`⚙️ Is using ${pkgInfo.name}@${pkgInfo.version}`);
-    injectCode(code)
-  } catch(e) {
-    console.error('O_o Fetch error.')
-    throw e
-  }
+  const [code, pkgInfo] = await Promise.all([fetchPkg(pkg), fetchPkgInfo(pkg)]);
+  console.log(`⚙️ Is using ${pkgInfo.name}@${pkgInfo.version}`);
+  injectCode(code)
 }
 
 function injectCode(code: string) {
@@ -37,10 +32,10 @@ function injectCode(code: string) {
 
 function injectRequire() {
   injectCode(`
-    if(window.require) {
-      console.log("⚙️ Already got an require, won't inject.")
+    if(window._require) {
+      console.log("⚙️ Already got an _require, won't inject.")
     } else {
-      window.require = function(pkg) {
+      window._require = function(pkg) {
         window.postMessage({
           type: 'require',
           data: { pkg }
