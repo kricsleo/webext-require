@@ -1,24 +1,11 @@
 {
+  "extends": "plasmo/templates/tsconfig.base",
+  "exclude": ["node_modules"],
+  "include": ["./**/*.ts", "./**/*.tsx"],
   "compilerOptions": {
-    "baseUrl": ".",
-    "module": "ESNext",
-    "target": "es2016",
-    "lib": ["DOM", "ESNext"],
-    "strict": true,
-    "esModuleInterop": true,
-    "incremental": false,
-    "skipLibCheck": true,
-    "jsx": "preserve",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "noUnusedLocals": true,
-    "forceConsistentCasingInFileNames": true,
-    "types": [
-      "vite/client"
-    ],
     "paths": {
-      "~/*": ["src/*"]
-    }
-  },
-  "exclude": ["dist", "node_modules"]
+      "~*": ["./src/*"]
+    },
+    "baseUrl": "."
+  }
 }
