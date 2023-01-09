@@ -1,6 +1,6 @@
 # Web Extension Require
 
-An extension to require npm packages in browser dev-tools.
+🚀 An extension to require npm packages in browser dev-tools.
 
 <p align="center">
   <img src="./screenshots/preview.gif" alt="preview" />
@@ -8,7 +8,7 @@ An extension to require npm packages in browser dev-tools.
 
 ## Usage
 
-1. [Download](https://github.com/kricsleo/webext-require/releases) this extension and install it on the [extension](chrome://extensions/) page.
+1. [Download](https://github.com/kricsleo/webext-require/releases) this extension and install it in the <a href="chrome://extensions/" target="_blank">extension</a> page.
 2. Use `_require` in dev-tools to install packages from npm.
 
 Packages must provide 'UMD' or other browser format bundles so that they can be directly used in the browser.
