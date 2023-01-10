@@ -3,10 +3,17 @@ import craie from 'craie'
 const red = (message: string) => craie.roundSL.bgRed.white(message)
 const blue = (message: string) => craie.roundSR.bgBlue.white(message)
 
-async function fetchPkg(pkg: string): Promise<string> {
+enum PKG_TYPE {
+  CSS,
+  JS,
+  OTHER
+}
+
+async function fetchPkg(pkg: string) {
   const res = await fetch(`https://cdn.jsdelivr.net/npm/${pkg}`);
+  const pkgType = detectPkgType(res)
   const code = await res.text();
-  return code;
+  return { code, pkgType };
 }
 
 async function fetchPkgInfo(pkg: string): Promise<Record<string, unknown>> {
@@ -19,37 +26,51 @@ let injected = false
 async function require(pkg: string): Promise<void> {
   craie.info(red('Fetching'), blue(pkg))
   try {
-    const [code, pkgInfo] = await Promise.all([fetchPkg(pkg), fetchPkgInfo(pkg)]);
-    const pkgName = pkgInfo.name + '@' + pkgInfo.version
-    if(isCSS(pkgInfo)) {
-      injectCSS(code)
-      craie.info(red('Required'), blue(pkgName), craie.blue(' CSS has been injected into current page'))
-    } else {
-      const detectVarsCode = `window.postMessage({ type: 'vars', data: { vars: Object.keys(window) } })`
-      injectJS(detectVarsCode)
-      const injectedCode = `
-        ${code}
-        ;window.postMessage({ type: 'require_success', data: { pkg: '${pkgName}', vars: Object.keys(window) } })
-      `
-      injected = false
-      injectJS(injectedCode)
-      setTimeout(() => {
-        if(!injected) {
-          craie.info(
-            red('⚠️ Failed'),
-            blue(pkgName),
-            craie.red(` \`${pkgName}\` may not support browser.`)
-          )
-        }
-      }, 300)
+    const [{ code, pkgType }, pkgInfo] = await Promise.all([
+      fetchPkg(pkg), 
+      fetchPkgInfo(pkg).catch(() => null)
+    ]);
+    const pkgName = pkgInfo ? pkgInfo.name + '@' + pkgInfo.version : pkg
+    switch (pkgType) {
+      case PKG_TYPE.JS: {
+        const detectVarsCode = `window.postMessage({ type: 'vars', data: { vars: Object.keys(window) } })`
+        injectJS(detectVarsCode)
+        const injectedCode = `
+          ${code}
+          ;window.postMessage({ type: 'require_success', data: { pkg: '${pkgName}', vars: Object.keys(window) } })
+        `
+        injected = false
+        injectJS(injectedCode)
+        setTimeout(() => {
+          if(!injected) {
+            craie.info(
+              red('⚠️ Failed'),
+              blue(pkgName),
+              craie.red(` \`${pkgName}\` may not support browser.`)
+            )
+          }
+        }, 300)
+      };break;
+      case PKG_TYPE.CSS: {
+        injectCSS(code)
+        craie.info(red('Required'), blue(pkgName), craie.blue(' CSS has been injected into current page'))
+      };break;
+      default: craie.info(red('⚠️ Failed'), blue(pkgName), craie.red(` \`${pkgName}\` may not support browser.`))
     }
   } catch(e: any) {
     craie.info(red('⚠️ Failed'), blue(pkg), craie.red(' ' + e.message))
   }
 }
 
-function isCSS(pkgInfo: Record<string, unknown>) {
-  return pkgInfo.main && /\.css$/.test(pkgInfo.main as string)
+function detectPkgType(reponse: Response) {
+  const contentType = reponse.headers.get('content-type')
+  if(contentType.includes('text/css')) {
+    return PKG_TYPE.CSS
+  } else if(contentType.includes('application/javascript')) {
+    return PKG_TYPE.JS
+  } else {
+    return PKG_TYPE.OTHER
+  }
 }
 
 function injectJS(code: string) {
