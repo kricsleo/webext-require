@@ -60,10 +60,9 @@ function injectJS(code: string) {
 }
 
 function injectCSS(code: string) {
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.innerHTML = code
-  document.head.appendChild(link);
+  const style = document.createElement("style");
+  style.innerHTML = code
+  document.head.appendChild(style);
 }
 
 export function injectRequire(namespace: string = '_require') {
