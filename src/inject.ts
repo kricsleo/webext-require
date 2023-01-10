@@ -9,6 +9,13 @@ enum PKG_TYPE {
   OTHER
 }
 
+async function fetchCDN(url: string) {
+  const res = await fetch(url);
+  const pkgType = detectPkgType(res)
+  const code = await res.text();
+  return { code, pkgType };
+}
+
 async function fetchPkg(pkg: string) {
   const res = await fetch(`https://cdn.jsdelivr.net/npm/${pkg}`);
   const pkgType = detectPkgType(res)
@@ -22,15 +29,29 @@ async function fetchPkgInfo(pkg: string): Promise<Record<string, unknown>> {
   return pkgInfo;
 }
 
+function isNpmPkg(pkg: string) {
+  return !/^https?:/.test(pkg)
+}
+
 let injected = false
 async function require(pkg: string): Promise<void> {
   craie.info(red('Fetching'), blue(pkg))
+  const isNpm = isNpmPkg(pkg)
   try {
-    const [{ code, pkgType }, pkgInfo] = await Promise.all([
-      fetchPkg(pkg), 
-      fetchPkgInfo(pkg).catch(() => null)
-    ]);
-    const pkgName = pkgInfo ? pkgInfo.name + '@' + pkgInfo.version : pkg + '@unknown'
+    let code
+    let pkgType
+    let pkgInfo
+    let pkgName
+    if(isNpm) {
+      [{ code, pkgType }, pkgInfo] = await Promise.all([
+        fetchPkg(pkg), 
+        fetchPkgInfo(pkg).catch(() => null)
+      ]);
+      pkgName = pkgInfo ? pkgInfo.name + '@' + pkgInfo.version : pkg + '@unknown'
+    } else {
+      ({ code, pkgType } = await fetchCDN(pkg));
+      pkgName = pkg
+    }
     switch (pkgType) {
       case PKG_TYPE.JS: {
         const detectVarsCode = `window.postMessage({ type: 'vars', data: { vars: Object.keys(window) } })`
@@ -110,7 +131,7 @@ export function listenRequire() {
       const { vars, pkg } = event.data.data
       const addedVars = vars.filter(v => !prevVars.includes(v))
       if(addedVars.length) {
-        craie.info(red('Required'), blue(pkg), craie.blue(` Found added global namespace: ${addedVars.join(',')}`))
+        craie.info(red('Required'), blue(pkg), craie.blue(` Found added global namespace: ${addedVars.join(', ')}`))
       } else {
         craie.info(red('Required'), blue(pkg), craie.red(` No added global namespace found`))
       }
