@@ -49,7 +49,7 @@ async function require(pkg: string): Promise<void> {
 }
 
 function isCSS(pkgInfo: Record<string, unknown>) {
-  return pkgInfo.main && /.css$/.test(pkgInfo.main as string)
+  return pkgInfo.main && /\.css$/.test(pkgInfo.main as string)
 }
 
 function injectJS(code: string) {
