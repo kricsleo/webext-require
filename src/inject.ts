@@ -51,7 +51,7 @@ async function require(pkg: string): Promise<void> {
         injectCSS(code)
         craie.info(red('Required'), blue(pkgName), craie.blue(' CSS has been injected into current page'))
       };break;
-      default: craie.info(red('⚠️ Failed'), blue(pkgName), craie.red(` Unsupported package content`))
+      default: craie.info(red('⚠️ Failed'), blue(pkgName), craie.red(` No supported content type auto-detected`))
     }
   } catch(e: any) {
     craie.info(red('⚠️ Failed'), blue(pkg), craie.red(' ' + e.message))
