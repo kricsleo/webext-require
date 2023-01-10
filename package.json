@@ -1,7 +1,7 @@
 {
   "name": "webext-require",
   "displayName": "Web Require",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "An extension to require npm packages in browser dev-tools.",
   "author": "shengfeng.xu",
   "scripts": {
