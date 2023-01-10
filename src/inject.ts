@@ -30,7 +30,7 @@ async function require(pkg: string): Promise<void> {
       fetchPkg(pkg), 
       fetchPkgInfo(pkg).catch(() => null)
     ]);
-    const pkgName = pkgInfo ? pkgInfo.name + '@' + pkgInfo.version : pkg
+    const pkgName = pkgInfo ? pkgInfo.name + '@' + pkgInfo.version : pkg + '@unknown'
     switch (pkgType) {
       case PKG_TYPE.JS: {
         const detectVarsCode = `window.postMessage({ type: 'vars', data: { vars: Object.keys(window) } })`
