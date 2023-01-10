@@ -25,30 +25,23 @@ async function require(pkg: string): Promise<void> {
       injectCSS(code)
       craie.info(red('Required'), blue(pkgName))
     } else {
+      const detectVarsCode = `window.postMessage({ type: 'vars', data: { vars: Object.keys(window) } })`
+      injectJS(detectVarsCode)
       const injectedCode = `
         ${code}
-        ;window.postMessage({ type: 'require_success', data: { pkg: '${pkgName}' } })
+        ;window.postMessage({ type: 'require_success', data: { pkg: '${pkgName}', vars: Object.keys(window) } })
       `
-      const prevVars = getWindowVars()
       injected = false
+      injectJS(injectedCode)
       setTimeout(() => {
-        if(injected) {
-          // const addedVars = detectRequiredVar(prevVars)
-          craie.info(red('Required'), blue(pkgName))
-          // if(addedVars.length) {
-          //   craie.info(red('Required'), blue(pkgName), craie.green(` Found added global namespace: ${addedVars.join(',')}`))
-          // } else {
-          //   craie.info(red('Required'), blue(pkgName), craie.red(` But no global namespace for '${pkgName}' found.`))
-          // }
-        } else {
+        if(!injected) {
           craie.info(
             red('⚠️ Failed'),
             blue(pkgName),
             craie.red(` \`${pkgName}\` may not support browser.`)
           )
         }
-      }, 300 )
-      injectJS(injectedCode)
+      }, 300)
     }
   } catch(e: any) {
     craie.info(red('⚠️ Failed'), blue(pkg), craie.red(' ' + e.message))
@@ -86,6 +79,7 @@ export function injectRequire(namespace: string = '_require') {
 }
 
 export function listenRequire() {
+  let prevVars = []
   window.addEventListener("message", event => {
     if(event.source == window && event.data?.type === 'require') {
       const pkg = event.data.data.pkg
@@ -93,20 +87,20 @@ export function listenRequire() {
     }
     if(event.source == window && event.data?.type === 'require_success') {
       injected = true
+      const { vars, pkg } = event.data.data
+      const addedVars = vars.filter(v => !prevVars.includes(v))
+      if(addedVars.length) {
+        craie.info(red('Required'), blue(pkg), craie.blue(` Found added global namespace: ${addedVars.join(',')}`))
+      } else {
+        craie.info(red('Required'), blue(pkg), craie.red(` But no added global namespace found`))
+      }
+    }
+    if(event.source == window && event.data?.type === 'vars') {
+      prevVars = event.data.data.vars
     }
     if(event.source == window && event.data?.type === 'conflict') {
       const namespace = event.data.data.namespace
       craie.info(red('⚠️ Failed'), craie.red(`\`${namespace}\` already existed, won't inject anything.`))
     }
   })
-}
-
-function detectRequiredVar(prevVars: string[]) {
-  const vars = getWindowVars()
-  const addedVars = vars.filter(v => !prevVars.includes(v))
-  return addedVars
-}
-
-function getWindowVars() {
-  return Object.keys(window)
 }
