@@ -8,7 +8,7 @@
 
 ## Usage
 
-1. [Download](https://github.com/kricsleo/webext-require/releases) this extension and install it in the <a href="chrome://extensions/" target="_blank">extension</a> page.
+1. [Download](https://github.com/kricsleo/webext-require/releases) this extension and install it in the browser extension page(like `chrome://extensions/`).
 2. Use `_require` in dev-tools to install packages from npm.
 
 Packages must provide 'UMD' or other browser format bundles so that they can be directly used in the browser.
