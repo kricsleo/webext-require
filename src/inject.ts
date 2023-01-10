@@ -23,7 +23,7 @@ async function require(pkg: string): Promise<void> {
     const pkgName = pkgInfo.name + '@' + pkgInfo.version
     if(isCSS(pkgInfo)) {
       injectCSS(code)
-      craie.info(red('Required'), blue(pkgName))
+      craie.info(red('Required'), blue(pkgName), craie.blue(' CSS has been injected into current page'))
     } else {
       const detectVarsCode = `window.postMessage({ type: 'vars', data: { vars: Object.keys(window) } })`
       injectJS(detectVarsCode)
