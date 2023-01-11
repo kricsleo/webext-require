@@ -1,7 +1,8 @@
 import craie from 'craie'
 
-const red = (message: string) => craie.roundSL.bgRed.white(message)
-const blue = (message: string) => craie.roundSR.bgBlue.white(message)
+const green = (message: string) => craie.bgEmerald.roundL.white(message)
+const red = (message: string) => craie.roundL.bgRed.white(message)
+const blue = (message: string) => craie.roundR.bgBlue.white(message)
 
 enum PKG_TYPE {
   CSS,
@@ -37,7 +38,7 @@ function getPkgName(pkg: string) {
 
 let injected = false
 async function require(pkg: string): Promise<void> {
-  craie.info(red('Fetching'), blue(pkg))
+  craie.info(green('Fetching'), blue(pkg))
   const isCDNPkg = isCDN(pkg)
   try {
     const { code, type, version, url } = isCDNPkg ? await fetchCDN(pkg) : await fetchNPM(pkg)
@@ -60,7 +61,7 @@ async function require(pkg: string): Promise<void> {
       };break;
       case PKG_TYPE.CSS: {
         injectCSS(code)
-        craie.info(red('Required'), blue(fullPkgName), craie.blue(' CSS has been injected into current page'))
+        craie.info(green('Required'), blue(fullPkgName), craie.blue(' CSS has been injected into current page'))
       };break;
       default: craie.info(red('⚠️ Failed'), blue(fullPkgName), craie.red(` No supported content type auto-detected: ${url}`))
     }
@@ -128,9 +129,9 @@ export function listenRequire() {
       const { vars, pkg } = event.data.data
       const addedVars = vars.filter(v => !prevVars.includes(v))
       if(addedVars.length) {
-        craie.info(red('Required'), blue(pkg), craie.blue(` Found added global namespace: ${addedVars.join(', ')}`))
+        craie.info(green('Required'), blue(pkg), craie.blue(` Found added global namespace: ${addedVars.join(', ')}`))
       } else {
-        craie.info(red('Required'), blue(pkg), craie.red(` No added global namespace found`))
+        craie.info(green('Required'), blue(pkg), craie.red(` No added global namespace found`))
       }
     }
     if(event.source == window && event.data?.type === 'vars') {

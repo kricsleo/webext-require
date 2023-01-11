@@ -10,20 +10,17 @@
     "package": "npm run build && plasmo package",
     "release": "bumpp"
   },
-  "dependencies": {
-    "bumpp": "^8.2.1",
-    "craie": "^0.0.7",
-    "plasmo": "0.61.5"
-  },
   "devDependencies": {
     "@types/chrome": "0.0.206",
     "@types/node": "18.11.18",
+    "bumpp": "^8.2.1",
+    "plasmo": "0.61.5",
     "typescript": "4.9.4"
   },
+  "dependencies": {
+    "craie": "^0.0.8"
+  },
   "manifest": {
-    "manifest_version": 2,
-    "host_permissions": [
-      "*://*/*"
-    ]
+    "manifest_version": 2
   }
 }
