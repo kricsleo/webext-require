@@ -1,6 +1,9 @@
 # Web Extension Require
 
-🚀 An extension to require npm packages in browser dev-tools.
+<h3 align="center">
+  🚀 A web extension to require npm packages in browser dev-tools.
+</h3>
+
 
 <p align="center">
   <img src="./screenshots/preview.gif" alt="preview" />
