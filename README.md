@@ -29,4 +29,4 @@ Javascript package needs to provide **UMD** or other browser format bundles so t
 
 ## License
 
-[MIT](./LICENSE) License © 2022 [Kricsleo](https://github.com/kricsleo)
+[MIT](./LICENSE) License © 2022-Present [Kricsleo](https://github.com/kricsleo)
