@@ -3,7 +3,10 @@
   "displayName": "Web Require",
   "version": "0.0.7",
   "description": "An extension to require npm packages in browser dev-tools.",
-  "author": "shengfeng.xu",
+  "author": "Kricsleo <kricsleo@163.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/kricsleo/webext-require#readme",
+  "packageManager": "pnpm@10.7.0",
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
@@ -22,6 +25,5 @@
   },
   "manifest": {
     "manifest_version": 2
-  },
-  "packageManager": "pnpm@10.7.0+sha512.6b865ad4b62a1d9842b61d674a393903b871d9244954f652b8842c2b553c72176b278f64c463e52d40fff8aba385c235c8c9ecf5cc7de4fd78b8bb6d49633ab6"
+  }
 }

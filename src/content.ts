@@ -1,5 +1,5 @@
 import type { PlasmoContentScript } from 'plasmo'
-import { injectRequire, listenRequire } from './inject.ts'
+import { injectRequire, listenRequire } from './inject'
 
 export const config: PlasmoContentScript = {
   matches: ["<all_urls>"],
