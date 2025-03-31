@@ -23,6 +23,10 @@ Javascript package needs to provide **UMD** or other browser format bundles so t
 1. [Download](https://github.com/kricsleo/webext-require/releases) this extension and install it in the browser extension page(like `chrome://extensions/`).
 2. Use `_require` in dev-tools to install packages from npm or CDN.
 
+## TODO
+
+- [ ] Migrate to [WXT](https://github.com/wxt-dev/wxt)
+
 ## Thanks
 
 [jsDelivr](https://www.jsdelivr.com/) - All npm assets are provided by it.
