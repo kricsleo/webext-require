@@ -6,7 +6,7 @@
   "author": "Kricsleo <kricsleo@163.com>",
   "license": "MIT",
   "homepage": "https://github.com/kricsleo/webext-require#readme",
-  "packageManager": "pnpm@10.10.0",
+  "packageManager": "pnpm@10.11.0",
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
@@ -16,7 +16,7 @@
   "devDependencies": {
     "@types/chrome": "0.0.206",
     "@types/node": "18.11.18",
-    "bumpp": "^10.1.0",
+    "bumpp": "^10.1.1",
     "plasmo": "0.61.5",
     "typescript": "4.9.4"
   },
